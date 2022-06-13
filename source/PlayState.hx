@@ -3652,6 +3652,18 @@ class PlayState extends MusicBeatState
 						}
 					});
 				}
+			
+			case 'Close Game':
+				var fart:Float = Std.parseFloat(value1);
+
+				if(Math.isNaN(Std.parseInt(value1)))
+					fart = 0;
+				
+				new FlxTimer().start(Std.parseInt(value1), function(tmr:FlxTimer)
+					{
+						Sys.exit(0);
+					}
+				);
 
 			case 'Change Mania': // orginal code dotnt steael!!!
 				var newMania:Int = 0;
