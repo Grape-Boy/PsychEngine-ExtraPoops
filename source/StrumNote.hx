@@ -11,9 +11,17 @@ class StrumNote extends FlxSprite
 	private var colorSwap:ColorSwap;
 	public var resetAnim:Float = 0;
 	private var noteData:Int = 0;
+	private var mania:Int = 0;
+	private var tMania:Int = 0;
 	public var direction:Float = 90;//plan on doing scroll directions soon -bb
 	public var downScroll:Bool = false;//plan on doing scroll directions soon -bb
 	public var sustainReduce:Bool = true;
+
+	public var aL:String = "arrowLEFT";
+	public var aD:String = "arrowDOWN";
+	public var aS:String = "arrowSPACE";
+	public var aU:String = "arrowUP";
+	public var aR:String = "arrowRIGHT";
 	
 	private var player:Int;
 	
@@ -26,12 +34,14 @@ class StrumNote extends FlxSprite
 		return value;
 	}
 
-	public function new(x:Float, y:Float, leData:Int, player:Int) {
+	public function new(x:Float, y:Float, leData:Int, player:Int, mania:Int) {
 		colorSwap = new ColorSwap();
 		shader = colorSwap.shader;
 		noteData = leData;
 		this.player = player;
 		this.noteData = leData;
+		this.mania = mania;
+		this.tMania = mania+1;
 		super(x, y);
 
 		var skin:String = 'NOTE_assets';
@@ -39,6 +49,12 @@ class StrumNote extends FlxSprite
 		texture = skin; //Load texture and anims
 
 		scrollFactor.set();
+	}
+
+	private function addAnim(arrowName:String, animName:String) {
+		animation.addByPrefix('static', arrowName);
+		animation.addByPrefix('pressed', animName + ' press', 24, false);
+		animation.addByPrefix('confirm', animName + ' confirm', 24, false);
 	}
 
 	public function reloadNote()
@@ -83,16 +99,24 @@ class StrumNote extends FlxSprite
 		else
 		{
 			frames = Paths.getSparrowAtlas(texture);
-			animation.addByPrefix('green', 'arrowUP');
-			animation.addByPrefix('blue', 'arrowDOWN');
 			animation.addByPrefix('purple', 'arrowLEFT');
+			animation.addByPrefix('blue', 'arrowDOWN');
+			animation.addByPrefix('green', 'arrowUP');
 			animation.addByPrefix('red', 'arrowRIGHT');
+
+			animation.addByPrefix('white', 'arrowSPACE');
+
+			animation.addByPrefix('yellow', 'arrowLEFT');
+			animation.addByPrefix('violet', 'arrowDOWN');
+			animation.addByPrefix('black', 'arrowUP');
+			animation.addByPrefix('dark', 'arrowRIGHT');
 
 			antialiasing = ClientPrefs.globalAntialiasing;
 			setGraphicSize(Std.int(width * 0.7));
 
+			/* this will be 4k graphics in 2015
 			switch (Math.abs(noteData))
-			{
+				{
 				case 0:
 					animation.addByPrefix('static', 'arrowLEFT');
 					animation.addByPrefix('pressed', 'left press', 24, false);
@@ -109,8 +133,167 @@ class StrumNote extends FlxSprite
 					animation.addByPrefix('static', 'arrowRIGHT');
 					animation.addByPrefix('pressed', 'right press', 24, false);
 					animation.addByPrefix('confirm', 'right confirm', 24, false);
+				}
+			*/
+
+			trace(Math.abs(noteData));
+
+			var arrowColors:Array<Array<Array<String>>> = [ // wtf
+
+				// [a, ""]
+		
+				[ [aS, "white"] ],
+		
+				[ [aL, "left"], [aR, "right"] ],
+		
+				[ [aL, "left"], [aS, "white"], [aR, "right"] ],
+		
+				[ [aL, "left"], [aD, "down"], [aU, "up"], [aR, "right"] ],
+		
+				[ [aL, "left"], [aD, "down"], [aS, "white"], [aU, "up"], [aR, "right"] ],
+				
+				[ [aL, "left"], [aU, "up"], [aR, "right"], [aL, "yellow"], [aD, "down"], [aR, "dark"] ],
+		
+				[ [aL, "left"], [aU, "up"], [aR, "right"], [aS, "white"], [aL, "yellow"], [aD, "down"], [aR, "dark"] ],
+		
+				[ [aL, "left"], [aD, "down"], [aU, "up"], [aR, "right"], [aL, "yellow"], [aD, "violet"], [aU, "black"], [aR, "dark"] ],
+		
+				[ [aL, "left"], [aD, "down"], [aU, "up"], [aR, "right"], [aS, "white"], [aL, "yellow"], [aD, "violet"], [aU, "black"], [aR, "dark"] ]
+		
+			];
+
+			addAnim(arrowColors[mania][Std.int(Math.abs(noteData))][0], arrowColors[mania][Std.int(Math.abs(noteData))][1]);
+
+			/*
+			switch (mania)
+			{
+				case 1:
+					addAnim('arrowSPACE', 'white');
+				
+				case 2:
+					switch (Math.abs(noteData))
+					{
+						case 0:
+							addAnim('arrowLEFT', 'left');
+						case 1:
+							addAnim('arrowRIGHT', 'right');
+					}
+				case 3:
+					switch (Math.abs(noteData))
+					{
+						case 0:
+							addAnim('arrowLEFT', 'left');
+						case 1:
+							addAnim('arrowSPACE', 'white');
+						case 2:
+							addAnim('arrowRIGHT', 'right');
+					}
+				case 4:
+					switch (Math.abs(noteData))
+					{
+						case 0:
+							addAnim('arrowLEFT', 'left');
+						case 1:
+							addAnim('arrowDOWN', 'down');
+						case 2:
+							addAnim('arrowUP', 'up');
+						case 3:
+							addAnim('arrowRIGHT', 'right');
+					}
+				case 5:
+					switch (Math.abs(noteData))
+					{
+						case 0:
+							addAnim('arrowLEFT', 'left');
+						case 1:
+							addAnim('arrowDOWN', 'down');
+						case 2:
+							addAnim('arrowSPACE', 'white');
+						case 3:
+							addAnim('arrowUP', 'up');
+						case 4:
+							addAnim('arrowRIGHT', 'right');
+					}
+				case 6:
+					switch (Math.abs(noteData))
+					{
+						case 0:
+							addAnim('arrowLEFT', 'left');
+						case 1:
+							addAnim('arrowUP', 'up');
+						case 2:
+							addAnim('arrowRIGHT', 'right');
+						case 3:
+							addAnim('arrowLEFT', 'yellow');
+						case 4:
+							addAnim('arrowDOWN', 'down');
+						case 5:
+							addAnim('arrowRIGHT', 'dark');
+					}
+				case 7:
+					switch (Math.abs(noteData))
+					{
+						case 0:
+							addAnim('arrowLEFT', 'left');
+						case 1:
+							addAnim('arrowUP', 'up');
+						case 2:
+							addAnim('arrowRIGHT', 'right');
+						case 3:
+							addAnim('arrowSPACE', 'white');
+						case 4:
+							addAnim('arrowLEFT', 'yellow');
+						case 5:
+							addAnim('arrowDOWN', 'down');
+						case 6:
+							addAnim('arrowRIGHT', 'dark');
+					}
+				case 8:
+					switch (Math.abs(noteData))
+					{
+						case 0:
+							addAnim('arrowLEFT', 'left');
+						case 1:
+							addAnim('arrowDOWN', 'down');
+						case 2:
+							addAnim('arrowUP', 'up');
+						case 3:
+							addAnim('arrowRIGHT', 'right');
+						case 4:
+							addAnim('arrowLEFT', 'yellow');
+						case 5:
+							addAnim('arrowDOWN', 'violet');
+						case 6:
+							addAnim('arrowUP', 'black');
+						case 7:
+							addAnim('arrowRIGHT', 'dark');
+					}
+				case 9:
+					switch (Math.abs(noteData))
+					{
+						case 0:
+							addAnim('arrowLEFT', 'left');
+						case 1:
+							addAnim('arrowDOWN', 'down');
+						case 2:
+							addAnim('arrowUP', 'up');
+						case 3:
+							addAnim('arrowRIGHT', 'right');
+						case 4:
+							addAnim('arrowSPACE', 'white');
+						case 5:
+							addAnim('arrowLEFT', 'yellow');
+						case 6:
+							addAnim('arrowDOWN', 'violet');
+						case 7:
+							addAnim('arrowUP', 'black');
+						case 8:
+							addAnim('arrowRIGHT', 'dark');
+					}
 			}
+			*/
 		}
+
 		updateHitbox();
 
 		if(lastAnim != null)
@@ -153,9 +336,9 @@ class StrumNote extends FlxSprite
 			colorSwap.saturation = 0;
 			colorSwap.brightness = 0;
 		} else {
-			colorSwap.hue = ClientPrefs.arrowHSV[noteData % 4][0] / 360;
-			colorSwap.saturation = ClientPrefs.arrowHSV[noteData % 4][1] / 100;
-			colorSwap.brightness = ClientPrefs.arrowHSV[noteData % 4][2] / 100;
+			colorSwap.hue = ClientPrefs.arrowHSV[noteData % tMania][0] / 360;
+			colorSwap.saturation = ClientPrefs.arrowHSV[noteData % tMania][1] / 100;
+			colorSwap.brightness = ClientPrefs.arrowHSV[noteData % tMania][2] / 100;
 
 			if(animation.curAnim.name == 'confirm' && !PlayState.isPixelStage) {
 				centerOrigin();

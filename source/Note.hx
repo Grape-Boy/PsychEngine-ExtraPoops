@@ -25,6 +25,8 @@ class Note extends FlxSprite
 
 	public var mustPress:Bool = false;
 	public var noteData:Int = 0;
+	public var mania:Int = 0;
+	public var tMania:Int = 0;
 	public var canBeHit:Bool = false;
 	public var tooLate:Bool = false;
 	public var wasGoodHit:Bool = false;
@@ -85,6 +87,7 @@ class Note extends FlxSprite
 
 	public var texture(default, set):String = null;
 
+	public var noCombo:Bool = false;
 	public var noAnimation:Bool = false;
 	public var noMissAnimation:Bool = false;
 	public var hitCausesMiss:Bool = false;
@@ -118,9 +121,9 @@ class Note extends FlxSprite
 
 	private function set_noteType(value:String):String {
 		noteSplashTexture = PlayState.SONG.splashSkin;
-		colorSwap.hue = ClientPrefs.arrowHSV[noteData % 4][0] / 360;
-		colorSwap.saturation = ClientPrefs.arrowHSV[noteData % 4][1] / 100;
-		colorSwap.brightness = ClientPrefs.arrowHSV[noteData % 4][2] / 100;
+		colorSwap.hue = ClientPrefs.arrowHSV[noteData % tMania][0] / 360;
+		colorSwap.saturation = ClientPrefs.arrowHSV[noteData % tMania][1] / 100;
+		colorSwap.brightness = ClientPrefs.arrowHSV[noteData % tMania][2] / 100;
 
 		if(noteData > -1 && noteType != value) {
 			switch(value) {
@@ -151,7 +154,7 @@ class Note extends FlxSprite
 		return value;
 	}
 
-	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inEditor:Bool = false)
+	public function new(strumTime:Float, noteData:Int, ?prevNote:Note, ?sustainNote:Bool = false, ?inEditor:Bool = false, mania:Int)
 	{
 		super();
 
@@ -169,26 +172,178 @@ class Note extends FlxSprite
 		if(!inEditor) this.strumTime += ClientPrefs.noteOffset;
 
 		this.noteData = noteData;
+		this.mania = mania;
+		this.tMania = mania+1;
+
+		var arrowColors:Array<Array<String>> = [ // yeah that's more efficient I think
+
+			[ "white" ],
+
+			[ "purple", "red" ],
+
+			[ "purple", "white", "red" ],
+
+			[ "purple", "blue", "green", "red" ],
+
+			[ "purple", "blue", "white", "green", "red" ],
+
+			[ "purple", "green", "red", "yellow", "blue", "dark" ],
+
+			[ "purple", "green", "red", "white", "yellow", "blue", "dark" ],
+
+			[ "purple", "blue", "green", "red", "yellow", "violet", "black", "dark" ],
+
+			[ "purple", "blue", "green", "red", "white", "yellow", "violet", "black", "dark" ]
+
+		];
 
 		if(noteData > -1) {
 			texture = '';
 			colorSwap = new ColorSwap();
 			shader = colorSwap.shader;
 
-			x += swagWidth * (noteData % 4);
+			x += swagWidth * (noteData % tMania);
 			if(!isSustainNote) { //Doing this 'if' check to fix the warnings on Senpai songs
 				var animToPlay:String = '';
-				switch (noteData % 4)
+				animToPlay = arrowColors[mania][noteData % tMania];
+				/*
+				switch (mania)
 				{
-					case 0:
-						animToPlay = 'purple';
 					case 1:
-						animToPlay = 'blue';
+						animToPlay = 'white';
+					
 					case 2:
-						animToPlay = 'green';
+						switch (noteData % mania)
+						{
+							case 0:
+								animToPlay = 'purple';
+							case 1:
+								animToPlay = 'red';
+						}
+					
 					case 3:
-						animToPlay = 'red';
+						switch (noteData % mania)
+						{
+							case 0:
+								animToPlay = 'purple';
+							case 1:
+								animToPlay = 'white';
+							case 2:
+								animToPlay = 'red';
+						}
+					
+					case 4:
+						switch (noteData % mania)
+						{
+							case 0:
+								animToPlay = 'purple';
+							case 1:
+								animToPlay = 'blue';
+							case 2:
+								animToPlay = 'green';
+							case 3:
+								animToPlay = 'red';
+						}
+					
+					case 5:
+						switch (noteData % mania)
+						{
+							case 0:
+								animToPlay = 'purple';
+							case 1:
+								animToPlay = 'blue';
+							case 2:
+								animToPlay = 'white';
+							case 3:
+								animToPlay = 'green';
+							case 4:
+								animToPlay = 'red';
+						}
+					
+					case 6:
+						switch (noteData % mania)
+						{
+							case 0:
+								animToPlay = 'purple';
+							case 1:
+								animToPlay = 'green';
+							case 2:
+								animToPlay = 'red';
+							case 3:
+								animToPlay = 'yellow';
+							case 4:
+								animToPlay = 'blue';
+							case 5:
+								animToPlay = 'dark';
+						}
+					
+					case 7:
+						switch (noteData % mania)
+						{
+							case 0:
+								animToPlay = 'purple';
+							case 1:
+								animToPlay = 'green';
+							case 2:
+								animToPlay = 'red';
+							case 3:
+								animToPlay = 'white';
+							case 4:
+								animToPlay = 'yellow';
+							case 5:
+								animToPlay = 'blue';
+							case 6:
+								animToPlay = 'dark';
+						}
+					
+					case 8:
+						switch (noteData % mania)
+						{
+							case 0:
+								animToPlay = 'purple';
+							case 1:
+								animToPlay = 'blue';
+							case 2:
+								animToPlay = 'green';
+							case 3:
+								animToPlay = 'red';
+							case 4:
+								animToPlay = 'yellow';
+							case 5:
+								animToPlay = 'violet';
+							case 6:
+								animToPlay = 'black';
+							case 7:
+								animToPlay = 'dark';
+						}
+					
+					case 9:
+						switch (noteData % mania)
+						{
+							case 0:
+								animToPlay = 'purple';
+							case 1:
+								animToPlay = 'blue';
+							case 2:
+								animToPlay = 'green';
+							case 3:
+								animToPlay = 'red';
+							case 4:
+								animToPlay = 'white';
+							case 5:
+								animToPlay = 'yellow';
+							case 6:
+								animToPlay = 'violet';
+							case 7:
+								animToPlay = 'black';
+							case 8:
+								animToPlay = 'dark';
+						}
 				}
+				*/
+
+				// animToPlay = '';
+
 				animation.play(animToPlay + 'Scroll');
 			}
 		}
@@ -208,17 +363,144 @@ class Note extends FlxSprite
 			offsetX += width / 2;
 			copyAngle = false;
 
-			switch (noteData)
+			animation.play(Std.string(arrowColors[mania][noteData] + 'holdend')); // making sure it's a string
+			/*
+			switch (mania)
 			{
-				case 0:
-					animation.play('purpleholdend');
 				case 1:
-					animation.play('blueholdend');
+					animation.play('whiteholdend');
+				
 				case 2:
-					animation.play('greenholdend');
+					switch (noteData)
+					{
+						case 0:
+							animation.play('purpleholdend');
+						case 1:
+							animation.play('redholdend');
+					}
+				
 				case 3:
-					animation.play('redholdend');
+					switch (noteData)
+					{
+						case 0:
+							animation.play('purpleholdend');
+						case 1:
+							animation.play('whiteholdend');
+						case 2:
+							animation.play('redholdend');
+					}
+				
+				case 4:
+					switch (noteData)
+					{
+						case 0:
+							animation.play('purpleholdend');
+						case 1:
+							animation.play('blueholdend');
+						case 2:
+							animation.play('greenholdend');
+						case 3:
+							animation.play('redholdend');
+					}
+				
+				case 5:
+					switch (noteData)
+					{
+						case 0:
+							animation.play('purpleholdend');
+						case 1:
+							animation.play('blueholdend');
+						case 2:
+							animation.play('whiteholdend');
+						case 3:
+							animation.play('greenholdend');
+						case 4:
+							animation.play('redholdend');
+					}
+				
+				case 6:
+					switch (noteData)
+					{
+						case 0:
+							animation.play('purpleholdend');
+						case 1:
+							animation.play('greenholdend');
+						case 2:
+							animation.play('redholdend');
+						case 3:
+							animation.play('yellowholdend');
+						case 4:
+							animation.play('blueholdend');
+						case 5:
+							animation.play('darkholdend');
+					}
+				
+				case 7:
+					switch (noteData)
+					{
+						case 0:
+							animation.play('purpleholdend');
+						case 1:
+							animation.play('greenholdend');
+						case 2:
+							animation.play('redholdend');
+						case 3:
+							animation.play('whiteholdend');
+						case 4:
+							animation.play('yellowholdend');
+						case 5:
+							animation.play('blueholdend');
+						case 6:
+							animation.play('darkholdend');
+					}
+				
+				case 8:
+					switch (noteData)
+					{
+						case 0:
+							animation.play('purpleholdend');
+						case 1:
+							animation.play('blueholdend');
+						case 2:
+							animation.play('greenholdend');
+						case 3:
+							animation.play('redholdend');
+						case 4:
+							animation.play('yellowholdend');
+						case 5:
+							animation.play('violetholdend');
+						case 6:
+							animation.play('blackholdend');
+						case 7:
+							animation.play('darkholdend');
+					}
+				
+				case 9:
+					switch (noteData)
+					{
+						case 0:
+							animation.play('purpleholdend');
+						case 1:
+							animation.play('blueholdend');
+						case 2:
+							animation.play('greenholdend');
+						case 3:
+							animation.play('redholdend');
+						case 4:
+							animation.play('whiteholdend');
+						case 5:
+							animation.play('yellowholdend');
+						case 6:
+							animation.play('violetholdend');
+						case 7:
+							animation.play('blackholdend');
+						case 8:
+							animation.play('darkholdend');
+					}
 			}
+			*/
+
+			// animation.play('holdend');
 
 			updateHitbox();
 
@@ -229,17 +511,144 @@ class Note extends FlxSprite
 
 			if (prevNote.isSustainNote)
 			{
-				switch (prevNote.noteData)
+
+				animation.play(Std.string(arrowColors[mania][prevNote.noteData] + 'hold'));
+
+				/*
+				switch (mania)
 				{
-					case 0:
-						prevNote.animation.play('purplehold');
 					case 1:
-						prevNote.animation.play('bluehold');
+						prevNote.animation.play('whitehold');
+					
 					case 2:
-						prevNote.animation.play('greenhold');
+						switch (prevNote.noteData)
+						{
+							case 0:
+								prevNote.animation.play('purplehold');
+							case 1:
+								prevNote.animation.play('redhold');
+						}
+					
 					case 3:
-						prevNote.animation.play('redhold');
+						switch (prevNote.noteData)
+						{
+							case 0:
+								prevNote.animation.play('purplehold');
+							case 1:
+								prevNote.animation.play('whitehold');
+							case 2:
+								prevNote.animation.play('redhold');
+						}
+					
+					case 4:
+						switch (prevNote.noteData)
+						{
+							case 0:
+								prevNote.animation.play('purplehold');
+							case 1:
+								prevNote.animation.play('bluehold');
+							case 2:
+								prevNote.animation.play('greenhold');
+							case 3:
+								prevNote.animation.play('redhold');
+						}
+					
+					case 5:
+						switch (prevNote.noteData)
+						{
+							case 0:
+								prevNote.animation.play('purplehold');
+							case 1:
+								prevNote.animation.play('bluehold');
+							case 2:
+								prevNote.animation.play('whitehold');
+							case 3:
+								prevNote.animation.play('greenhold');
+							case 4:
+								prevNote.animation.play('redhold');
+						}
+					// prevNote.animation.play('hold');
+					case 6:
+						switch (prevNote.noteData)
+						{
+							case 0:
+								prevNote.animation.play('purplehold');
+							case 1:
+								prevNote.animation.play('greenhold');
+							case 2:
+								prevNote.animation.play('redhold');
+							case 3:
+								prevNote.animation.play('yellowhold');
+							case 4:
+								prevNote.animation.play('bluehold');
+							case 5:
+								prevNote.animation.play('darkhold');
+						}
+					
+					case 7:
+						switch (prevNote.noteData)
+						{
+							case 0:
+								prevNote.animation.play('purplehold');
+							case 1:
+								prevNote.animation.play('greenhold');
+							case 2:
+								prevNote.animation.play('redhold');
+							case 3:
+								prevNote.animation.play('whitehold');
+							case 4:
+								prevNote.animation.play('yellowhold');
+							case 5:
+								prevNote.animation.play('bluehold');
+							case 6:
+								prevNote.animation.play('darkhold');
+						}
+					
+					case 8:
+						switch (prevNote.noteData)
+						{
+							case 0:
+								prevNote.animation.play('purplehold');
+							case 1:
+								prevNote.animation.play('bluehold');
+							case 2:
+								prevNote.animation.play('greenhold');
+							case 3:
+								prevNote.animation.play('redhold');
+							case 4:
+								prevNote.animation.play('yellowhold');
+							case 5:
+								prevNote.animation.play('violethold');
+							case 6:
+								prevNote.animation.play('blackhold');
+							case 7:
+								prevNote.animation.play('darkhold');
+						}
+					
+					case 9:
+						switch (prevNote.noteData)
+						{
+							case 0:
+								prevNote.animation.play('purplehold');
+							case 1:
+								prevNote.animation.play('bluehold');
+							case 2:
+								prevNote.animation.play('greenhold');
+							case 3:
+								prevNote.animation.play('redhold');
+							case 4:
+								prevNote.animation.play('whitehold');
+							case 5:
+								prevNote.animation.play('yellowhold');
+							case 6:
+								prevNote.animation.play('violethold');
+							case 7:
+								prevNote.animation.play('blackhold');
+							case 8:
+								prevNote.animation.play('darkhold');
+						}
 				}
+				*/
 
 				prevNote.scale.y *= Conductor.stepCrochet / 100 * 1.05;
 				if(PlayState.instance != null)
@@ -345,17 +754,42 @@ class Note extends FlxSprite
 		animation.addByPrefix('blueScroll', 'blue0');
 		animation.addByPrefix('purpleScroll', 'purple0');
 
+		animation.addByPrefix('whiteScroll', 'white0');
+
+		animation.addByPrefix('yellowScroll', 'yellow0');
+		animation.addByPrefix('violetScroll', 'violet0');
+		animation.addByPrefix('blackScroll', 'black0');
+		animation.addByPrefix('darkScroll', 'dark0');
+
 		if (isSustainNote)
 		{
-			animation.addByPrefix('purpleholdend', 'pruple end hold');
+			// Hold Ends
+
+			animation.addByPrefix('purpleholdend', 'purple hold end');
 			animation.addByPrefix('greenholdend', 'green hold end');
 			animation.addByPrefix('redholdend', 'red hold end');
 			animation.addByPrefix('blueholdend', 'blue hold end');
+
+			animation.addByPrefix('whiteholdend', 'white hold end');
+
+			animation.addByPrefix('yellowholdend', 'yellow hold end');
+			animation.addByPrefix('violetholdend', 'violet hold end');
+			animation.addByPrefix('blackholdend', 'black hold end');
+			animation.addByPrefix('darkholdend', 'dark hold end');
+
+			// Hold Pieces
 
 			animation.addByPrefix('purplehold', 'purple hold piece');
 			animation.addByPrefix('greenhold', 'green hold piece');
 			animation.addByPrefix('redhold', 'red hold piece');
 			animation.addByPrefix('bluehold', 'blue hold piece');
+
+			animation.addByPrefix('whitehold', 'white hold piece');
+
+			animation.addByPrefix('yellowhold', 'yellow hold piece');
+			animation.addByPrefix('violethold', 'violet hold piece');
+			animation.addByPrefix('blackhold', 'black hold piece');
+			animation.addByPrefix('darkhold', 'dark hold piece');
 		}
 
 		setGraphicSize(Std.int(width * 0.7));
