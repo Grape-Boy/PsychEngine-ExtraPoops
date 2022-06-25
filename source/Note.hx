@@ -88,6 +88,7 @@ class Note extends FlxSprite
 	public var texture(default, set):String = null;
 
 	public var noCombo:Bool = false;
+	public var noStrumAnim:Bool = false;
 	public var noAnimation:Bool = false;
 	public var noMissAnimation:Bool = false;
 	public var hitCausesMiss:Bool = false;
@@ -512,8 +513,8 @@ class Note extends FlxSprite
 			if (prevNote.isSustainNote)
 			{
 
-				animation.play(Std.string(arrowColors[mania][prevNote.noteData] + 'hold'));
-
+				prevNote.animation.play(Std.string(arrowColors[mania][prevNote.noteData] + 'hold'));
+				// I wrote animation instead of prevNote.animation so it was bugged and I was so confused lmaoooo
 				/*
 				switch (mania)
 				{

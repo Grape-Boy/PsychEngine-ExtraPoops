@@ -196,6 +196,7 @@ class PlayState extends MusicBeatState
 	public var camOther:FlxCamera;
 	public var cameraSpeed:Float = 1;
 
+	//Mania shit
 	public var mania:Int = SONG.mania;
 	public var tMania:Int;
 
@@ -301,6 +302,9 @@ class PlayState extends MusicBeatState
 
 	// Less laggy controls
 	private var keysArray:Array<Array<Dynamic>>;
+	private var possibleKeys:Array<Array<Bool>>;
+	private var possibleKeysP:Array<Array<Bool>>;
+	private var possibleKeysR:Array<Array<Bool>>;
 
 	var precacheList:Map<String, String> = new Map<String, String>();
 
@@ -315,18 +319,30 @@ class PlayState extends MusicBeatState
 		debugKeysCharacter = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_2'));
 		PauseSubState.songName = null; //Reset to default
 
-		mania = 3;
-		tMania = 4;
+		//mania = 3;
+		if (mania > 8 || mania < 0)
+		{
+			mania = 3;
+			tMania = 4;
+		} else {
+			tMania = mania + 1;
+		}
+		//tMania = mania+1;
+		trace("tMania is '"+tMania+"'");
 
 		// ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_')),
+
 		keysArray = [
+			
 			[ // 1K
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_one')),
 			],
+
 			[ // 2K
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_two1')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_two2')),
 			],
+
 			[ // 3K
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_three1')),
 
@@ -334,12 +350,15 @@ class PlayState extends MusicBeatState
 
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_three3')),
 			],
+
+
 			[ // 4K
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_left')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_down')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_up')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_right'))
 			],
+
 			[ // 5K
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five1')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five2')),
@@ -349,6 +368,7 @@ class PlayState extends MusicBeatState
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five4')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five5')),
 			],
+
 			[ // 6K
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six1')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six2')),
@@ -358,6 +378,7 @@ class PlayState extends MusicBeatState
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six5')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six6')),
 			],
+
 			[ // 7K
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven1')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven2')),
@@ -369,6 +390,7 @@ class PlayState extends MusicBeatState
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven6')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven7')),
 			],
+
 			[ // 8K
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight1')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight2')),
@@ -380,6 +402,7 @@ class PlayState extends MusicBeatState
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight7')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight8')),
 			],
+
 			[ // 9K
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine1')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine2')),
@@ -392,8 +415,12 @@ class PlayState extends MusicBeatState
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine7')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine8')),
 				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine9')),
-			],
+			]
 		];
+
+		trace("Bingo oingo");
+
+		//trace(keysArray);
 
 		//Ratings
 		ratingsData.push(new Rating('sick')); //default rating
@@ -420,6 +447,7 @@ class PlayState extends MusicBeatState
 		for (i in 0...keysArray[mania].length)
 		{
 			keysPressed.push(false);
+			trace(keysPressed[i]);
 		}
 
 		if (FlxG.sound.music != null)
@@ -2388,7 +2416,7 @@ class PlayState extends MusicBeatState
 
 				var gottaHitNote:Bool = section.mustHitSection;
 
-				if (songNotes[1] > 3)
+				if (songNotes[1] > mania)
 				{
 					gottaHitNote = !section.mustHitSection;
 				}
@@ -2439,7 +2467,7 @@ class PlayState extends MusicBeatState
 						else if(ClientPrefs.middleScroll)
 						{
 							sustainNote.x += 310;
-							if(daNoteData > Std.int(tMania/2)) //Up and Right
+							if(daNoteData > Std.int(mania/2)) //Up and Right
 							{
 								sustainNote.x += FlxG.width / 2 + 25;
 							}
@@ -2610,7 +2638,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function changeMania(newValue:Int)
+	function changeMania(newValue:Int) // sorry tpose :c
 	{
 		//funny dissapear transitions
 		//while new strums appear
@@ -3669,7 +3697,7 @@ class PlayState extends MusicBeatState
 				var newMania:Int = 0;
 
 				newMania = Std.parseInt(value1);
-				if(Math.isNaN(newMania) && newMania < 0 && newMania > 9)
+				if(Math.isNaN(newMania) || newMania < 0 || newMania > 8)
 					newMania = 3;
 
 				changeMania(newMania);
@@ -4221,6 +4249,7 @@ class PlayState extends MusicBeatState
 				// Shubs, this is for the "Just the Two of Us" achievement lol
 				//									- Shadow Mario
 				keysPressed[key] = true;
+				trace(keysPressed[key]);
 
 				//more accurate hit time for the ratings? part 2 (Now that the calculations are done, go back to the time it was before for not causing a note stutter)
 				Conductor.songPosition = lastTime;
@@ -4276,16 +4305,199 @@ class PlayState extends MusicBeatState
 	private function keyShit():Void
 	{
 		// HOLDING
+		/*
 		var up = controls.NOTE_UP;
 		var right = controls.NOTE_RIGHT;
 		var down = controls.NOTE_DOWN;
 		var left = controls.NOTE_LEFT;
-		var controlHoldArray:Array<Bool> = [left, down, up, right];
+		*/
+
+		possibleKeys = [
+			[ // 1K (0)
+				controls.NOTE_ONE
+			],
+	
+			[ // 2K (1)
+				controls.NOTE_TWO1,
+				controls.NOTE_TWO2
+			],
+	
+			[ // 3K (2)
+				controls.NOTE_THREE1,
+				controls.NOTE_THREE2,
+				controls.NOTE_THREE3
+			],
+	
+			[ // 4K (3)
+				controls.NOTE_LEFT,
+				controls.NOTE_DOWN,
+				controls.NOTE_UP,
+				controls.NOTE_RIGHT
+			],
+	
+			[ // 5K (4)
+				controls.NOTE_FIVE1,
+				controls.NOTE_FIVE2,
+				controls.NOTE_FIVE3,
+				controls.NOTE_FIVE4,
+				controls.NOTE_FIVE5
+			],
+	
+			[ // 6K (5)
+				controls.NOTE_SIX1,
+				controls.NOTE_SIX2,
+				controls.NOTE_SIX3,
+				controls.NOTE_SIX4,
+				controls.NOTE_SIX5,
+				controls.NOTE_SIX6
+			],
+	
+			[ // 7K (6)
+				controls.NOTE_SEVEN1,
+				controls.NOTE_SEVEN2,
+				controls.NOTE_SEVEN3,
+				controls.NOTE_SEVEN4,
+				controls.NOTE_SEVEN5,
+				controls.NOTE_SEVEN6,
+				controls.NOTE_SEVEN7
+			],
+	
+			[ // 8K (7)
+				controls.NOTE_EIGHT1,
+				controls.NOTE_EIGHT2,
+				controls.NOTE_EIGHT3,
+				controls.NOTE_EIGHT4,
+				controls.NOTE_EIGHT5,
+				controls.NOTE_EIGHT6,
+				controls.NOTE_EIGHT7,
+				controls.NOTE_EIGHT8
+			],
+	
+			[ // 9K (8)
+				controls.NOTE_NINE1,
+				controls.NOTE_NINE2,
+				controls.NOTE_NINE3,
+				controls.NOTE_NINE4,
+				controls.NOTE_NINE5,
+				controls.NOTE_NINE6,
+				controls.NOTE_NINE7,
+				controls.NOTE_NINE8,
+				controls.NOTE_NINE9
+			]
+		];
+		var controlHoldArray:Array<Bool> = [/*left, down, up, right*/];
+		
+		for (i in 0...keysArray[mania].length)
+		{
+
+			controlHoldArray.push(possibleKeys[mania][i]);
+
+			/*
+			var dirBoolThingy:Bool;
+			
+			dirBoolThingy = controls[Std.string(possibleKeys[mania][i]).toUpperCase()]; "Array access is not allowed on Controls" IDC STFU
+			*/
+		}
+
+		for (i in (possibleKeys.length-1)...-1)
+		{
+			while (possibleKeys[i].length > 0)
+				possibleKeys[i].pop();
+
+			possibleKeys.pop();
+		}
 
 		// TO DO: Find a better way to handle controller inputs, this should work for now
 		if(ClientPrefs.controllerMode)
 		{
-			var controlArray:Array<Bool> = [controls.NOTE_LEFT_P, controls.NOTE_DOWN_P, controls.NOTE_UP_P, controls.NOTE_RIGHT_P];
+			possibleKeysP = [
+				[ // 1K (0)
+					controls.NOTE_ONE_P
+				],
+		
+				[ // 2K (1)
+					controls.NOTE_TWO1_P,
+					controls.NOTE_TWO2_P
+				],
+		
+				[ // 3K (2)
+					controls.NOTE_THREE1_P,
+					controls.NOTE_THREE2_P,
+					controls.NOTE_THREE3_P
+				],
+		
+				[ // 4K (3)
+					controls.NOTE_LEFT_P,
+					controls.NOTE_DOWN_P,
+					controls.NOTE_UP_P,
+					controls.NOTE_RIGHT_P
+				],
+		
+				[ // 5K (4)
+					controls.NOTE_FIVE1_P,
+					controls.NOTE_FIVE2_P,
+					controls.NOTE_FIVE3_P,
+					controls.NOTE_FIVE4_P,
+					controls.NOTE_FIVE5_P
+				],
+		
+				[ // 6K (5)
+					controls.NOTE_SIX1_P,
+					controls.NOTE_SIX2_P,
+					controls.NOTE_SIX3_P,
+					controls.NOTE_SIX4_P,
+					controls.NOTE_SIX5_P,
+					controls.NOTE_SIX6_P
+				],
+		
+				[ // 7K (6)
+					controls.NOTE_SEVEN1_P,
+					controls.NOTE_SEVEN2_P,
+					controls.NOTE_SEVEN3_P,
+					controls.NOTE_SEVEN4_P,
+					controls.NOTE_SEVEN5_P,
+					controls.NOTE_SEVEN6_P,
+					controls.NOTE_SEVEN7_P
+				],
+		
+				[ // 8K (7)
+					controls.NOTE_EIGHT1_P,
+					controls.NOTE_EIGHT2_P,
+					controls.NOTE_EIGHT3_P,
+					controls.NOTE_EIGHT4_P,
+					controls.NOTE_EIGHT5_P,
+					controls.NOTE_EIGHT6_P,
+					controls.NOTE_EIGHT7_P,
+					controls.NOTE_EIGHT8_P
+				],
+		
+				[ // 9K (8)
+					controls.NOTE_NINE1_P,
+					controls.NOTE_NINE2_P,
+					controls.NOTE_NINE3_P,
+					controls.NOTE_NINE4_P,
+					controls.NOTE_NINE5_P,
+					controls.NOTE_NINE6_P,
+					controls.NOTE_NINE7_P,
+					controls.NOTE_NINE8_P,
+					controls.NOTE_NINE9_P
+				]
+			];
+			var controlArray:Array<Bool> = [/*controls.NOTE_LEFT_P, controls.NOTE_DOWN_P, controls.NOTE_UP_P, controls.NOTE_RIGHT_P*/];
+
+			for (i in 0...keysArray[mania].length)
+			{
+				controlArray.push(possibleKeysP[mania][i]);
+			}
+
+			for (i in (possibleKeysP.length-1)...-1)
+			{
+				while (possibleKeysP[i].length > 0)
+					possibleKeysP[i].pop();
+				
+				possibleKeysP.pop();
+			}
+
 			if(controlArray.contains(true))
 			{
 				for (i in 0...controlArray.length)
@@ -4327,7 +4539,94 @@ class PlayState extends MusicBeatState
 		// TO DO: Find a better way to handle controller inputs, this should work for now
 		if(ClientPrefs.controllerMode)
 		{
-			var controlArray:Array<Bool> = [controls.NOTE_LEFT_R, controls.NOTE_DOWN_R, controls.NOTE_UP_R, controls.NOTE_RIGHT_R];
+			possibleKeysR = [
+				[ // 1K (0)
+					controls.NOTE_ONE_R
+				],
+		
+				[ // 2K (1)
+					controls.NOTE_TWO1_R,
+					controls.NOTE_TWO2_R
+				],
+		
+				[ // 3K (2)
+					controls.NOTE_THREE1_R,
+					controls.NOTE_THREE2_R,
+					controls.NOTE_THREE3_R
+				],
+		
+				[ // 4K (3)
+					controls.NOTE_LEFT_R,
+					controls.NOTE_DOWN_R,
+					controls.NOTE_UP_R,
+					controls.NOTE_RIGHT_R
+				],
+		
+				[ // 5K (4)
+					controls.NOTE_FIVE1_R,
+					controls.NOTE_FIVE2_R,
+					controls.NOTE_FIVE3_R,
+					controls.NOTE_FIVE4_R,
+					controls.NOTE_FIVE5_R
+				],
+		
+				[ // 6K (5)
+					controls.NOTE_SIX1_R,
+					controls.NOTE_SIX2_R,
+					controls.NOTE_SIX3_R,
+					controls.NOTE_SIX4_R,
+					controls.NOTE_SIX5_R,
+					controls.NOTE_SIX6_R
+				],
+		
+				[ // 7K (6)
+					controls.NOTE_SEVEN1_R,
+					controls.NOTE_SEVEN2_R,
+					controls.NOTE_SEVEN3_R,
+					controls.NOTE_SEVEN4_R,
+					controls.NOTE_SEVEN5_R,
+					controls.NOTE_SEVEN6_R,
+					controls.NOTE_SEVEN7_R
+				],
+		
+				[ // 8K (7)
+					controls.NOTE_EIGHT1_R,
+					controls.NOTE_EIGHT2_R,
+					controls.NOTE_EIGHT3_R,
+					controls.NOTE_EIGHT4_R,
+					controls.NOTE_EIGHT5_R,
+					controls.NOTE_EIGHT6_R,
+					controls.NOTE_EIGHT7_R,
+					controls.NOTE_EIGHT8_R
+				],
+		
+				[ // 9K (8)
+					controls.NOTE_NINE1_R,
+					controls.NOTE_NINE2_R,
+					controls.NOTE_NINE3_R,
+					controls.NOTE_NINE4_R,
+					controls.NOTE_NINE5_R,
+					controls.NOTE_NINE6_R,
+					controls.NOTE_NINE7_R,
+					controls.NOTE_NINE8_R,
+					controls.NOTE_NINE9_R
+				]
+			];
+			var controlArray:Array<Bool> = [/*controls.NOTE_LEFT_R, controls.NOTE_DOWN_R, controls.NOTE_UP_R, controls.NOTE_RIGHT_R*/];
+
+			for (i in 0...keysArray[mania].length)
+			{
+				controlArray.push(possibleKeysR[mania][i]);
+			}
+	
+			for (i in (possibleKeysR.length-1)...-1)
+			{
+				while (possibleKeysR[i].length > 0)
+					possibleKeysR[i].pop();
+				
+				possibleKeysR.pop();
+			}
+
 			if(controlArray.contains(true))
 			{
 				for (i in 0...controlArray.length)
@@ -4470,7 +4769,8 @@ class PlayState extends MusicBeatState
 		if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) {
 			time += 0.15;
 		}
-		StrumPlayAnim(true, Std.int(Math.abs(note.noteData)) % tMania, time);
+		if (!note.noStrumAnim)
+			StrumPlayAnim(true, Std.int(Math.abs(note.noteData)) % tMania, time);
 		note.hitByOpponent = true;
 
 		callOnLuas('opponentNoteHit', [notes.members.indexOf(note), Math.abs(note.noteData), note.noteType, note.isSustainNote, note.ID]);
@@ -4571,7 +4871,8 @@ class PlayState extends MusicBeatState
 				if(note.isSustainNote && !note.animation.curAnim.name.endsWith('end')) {
 					time += 0.15;
 				}
-				StrumPlayAnim(false, Std.int(Math.abs(note.noteData)) % tMania, time);
+				if (!note.noStrumAnim)
+					StrumPlayAnim(false, Std.int(Math.abs(note.noteData)) % tMania, time);
 			} else {
 				playerStrums.forEach(function(spr:StrumNote)
 				{

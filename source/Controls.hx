@@ -15,6 +15,7 @@ import flixel.input.keyboard.FlxKey;
 // nvm lol
 
 #if (haxe >= "4.0.0")
+//@:arrayAccess // hope this works lol // it didn't because this isn't the right thing (this was written mere secenods after) // this is so uncool
 enum abstract Action(String) to String from String
 {
 	var UI_UP = "ui_up";
@@ -29,7 +30,7 @@ enum abstract Action(String) to String from String
 	var UI_LEFT_R = "ui_left-release";
 	var UI_RIGHT_R = "ui_right-release";
 	var UI_DOWN_R = "ui_down-release";
-	/*
+	
 	// 1K
 
 	var NOTE_ONE = "note_one";
@@ -62,7 +63,7 @@ enum abstract Action(String) to String from String
 	var NOTE_THREE1_R = "note_three1-release";
 	var NOTE_THREE2_R = "note_three2-release";
 	var NOTE_THREE3_R = "note_three3-release";
-	*/
+	
 	// 4K
 
 	var NOTE_LEFT = "note_left";
@@ -79,7 +80,7 @@ enum abstract Action(String) to String from String
 	var NOTE_DOWN_R = "note_down-release";
 	var NOTE_UP_R = "note_up-release";
 	var NOTE_RIGHT_R = "note_right-release";
-	/*
+	
 	//var NOTE__ = "note_-";
 
 	// 5K
@@ -211,7 +212,7 @@ enum abstract Action(String) to String from String
 	var NOTE_NINE7_R = "note_nine7-release";
 	var NOTE_NINE8_R = "note_nine8-release";
 	var NOTE_NINE9_R = "note_nine9-release";
-	*/
+	
 	var ACCEPT = "accept";
 	var BACK = "back";
 	var PAUSE = "pause";
@@ -233,7 +234,7 @@ abstract Action(String) to String from String
 	var UI_LEFT_R = "ui_left-release";
 	var UI_RIGHT_R = "ui_right-release";
 	var UI_DOWN_R = "ui_down-release";
-	/*
+	
 	// 1K
 
 	var NOTE_ONE = "note_one";
@@ -266,7 +267,7 @@ abstract Action(String) to String from String
 	var NOTE_THREE1_R = "note_three1-release";
 	var NOTE_THREE2_R = "note_three2-release";
 	var NOTE_THREE3_R = "note_three3-release";
-	*/
+	
 	// 4K
 
 	var NOTE_LEFT = "note_left";
@@ -283,7 +284,7 @@ abstract Action(String) to String from String
 	var NOTE_DOWN_R = "note_down-release";
 	var NOTE_UP_R = "note_up-release";
 	var NOTE_RIGHT_R = "note_right-release";
-	/*
+	
 	//var NOTE__ = "note_-";
 
 	// 5K
@@ -415,7 +416,7 @@ abstract Action(String) to String from String
 	var NOTE_NINE7_R = "note_nine7-release";
 	var NOTE_NINE8_R = "note_nine8-release";
 	var NOTE_NINE9_R = "note_nine9-release";
-	*/
+	
 	var ACCEPT = "accept";
 	var BACK = "back";
 	var PAUSE = "pause";
@@ -440,7 +441,7 @@ enum Control
 	UI_LEFT;
 	UI_RIGHT;
 	UI_DOWN;
-	/*
+	
 	// 1K
 
 	NOTE_ONE;
@@ -455,14 +456,14 @@ enum Control
 	NOTE_THREE1;
 	NOTE_THREE2;
 	NOTE_THREE3;
-	*/
+	
 	// 4K
 	
 	NOTE_LEFT;
 	NOTE_DOWN;
 	NOTE_UP;
 	NOTE_RIGHT;
-	/*
+	
 	// 5K
 
 	NOTE_FIVE1;
@@ -512,7 +513,7 @@ enum Control
 	NOTE_NINE7;
 	NOTE_NINE8;
 	NOTE_NINE9;
-	*/
+	
 	RESET;
 	ACCEPT;
 	BACK;
@@ -545,7 +546,7 @@ class Controls extends FlxActionSet
 	var _ui_leftR = new FlxActionDigital(Action.UI_LEFT_R);
 	var _ui_rightR = new FlxActionDigital(Action.UI_RIGHT_R);
 	var _ui_downR = new FlxActionDigital(Action.UI_DOWN_R);
-	/*
+	
 	// 1K
 
 	var _note_one = new FlxActionDigital(Action.NOTE_ONE);
@@ -578,7 +579,7 @@ class Controls extends FlxActionSet
 	var _note_three1R = new FlxActionDigital(Action.NOTE_THREE1_R);
 	var _note_three2R = new FlxActionDigital(Action.NOTE_THREE2_R);
 	var _note_three3R = new FlxActionDigital(Action.NOTE_THREE3_R);
-	*/
+	 
 	// 4K
 	
 	var _note_left = new FlxActionDigital(Action.NOTE_LEFT);
@@ -595,7 +596,7 @@ class Controls extends FlxActionSet
 	var _note_downR = new FlxActionDigital(Action.NOTE_DOWN_R);
 	var _note_upR = new FlxActionDigital(Action.NOTE_UP_R);
 	var _note_rightR = new FlxActionDigital(Action.NOTE_RIGHT_R);
-	/*
+	
 	// 5K
 
 	var _note_five1 = new FlxActionDigital(Action.NOTE_FIVE1);
@@ -725,10 +726,11 @@ class Controls extends FlxActionSet
 	var _note_nine7R = new FlxActionDigital(Action.NOTE_NINE7_R);
 	var _note_nine8R = new FlxActionDigital(Action.NOTE_NINE8_R);
 	var _note_nine9R = new FlxActionDigital(Action.NOTE_NINE9_R);
-	*/
+	
 	// ^ He was forced to add extra keys to ShadowMario's Psych Engine
 	// jk i ended up making a roblox plugin that generates code
 	// WTF IT'S USELESS:bangbang: :scream:
+	// unless...? :flushed:
 
 	var _accept = new FlxActionDigital(Action.ACCEPT);
 	var _back = new FlxActionDigital(Action.BACK);
@@ -803,7 +805,7 @@ class Controls extends FlxActionSet
 
 	inline function get_UI_DOWN_R()
 		return _ui_downR.check();
-	/*
+	
 	// 1K
 
 	public var NOTE_ONE(get, never):Bool;
@@ -899,7 +901,7 @@ class Controls extends FlxActionSet
 
 	inline function get_NOTE_THREE3_R()
 		return _note_three3R.check();
-	*/
+	
 	// 4K
 
 	public var NOTE_UP(get, never):Bool;
@@ -961,7 +963,7 @@ class Controls extends FlxActionSet
 
 	inline function get_NOTE_DOWN_R()
 		return _note_downR.check();
-	/*
+	
 	// 5K
 
 	public var NOTE_FIVE1(get, never):Bool;
@@ -1496,7 +1498,7 @@ class Controls extends FlxActionSet
 
 	inline function get_NOTE_NINE9_R()
 		return _note_nine9R.check();
-	*/
+	
 	public var ACCEPT(get, never):Bool;
 
 	inline function get_ACCEPT()
@@ -1534,7 +1536,7 @@ class Controls extends FlxActionSet
 		add(_ui_leftR);
 		add(_ui_rightR);
 		add(_ui_downR);
-		/*
+		
 		// 1K
 
 		add(_note_one);
@@ -1564,7 +1566,7 @@ class Controls extends FlxActionSet
 		add(_note_three3);
 		add(_note_three3P);
 		add(_note_three3R);
-		*/
+		
 		// 4K
 
 		add(_note_left);
@@ -1582,7 +1584,7 @@ class Controls extends FlxActionSet
 		add(_note_right);
 		add(_note_rightP);
 		add(_note_rightR);
-		/*
+		
 		// 5K
 
 		add(_note_five1);
@@ -1732,7 +1734,7 @@ class Controls extends FlxActionSet
 		add(_note_nine9);
 		add(_note_nine9P);
 		add(_note_nine9R);
-		*/
+		
 		add(_accept);
 		add(_back);
 		add(_pause);
@@ -1760,7 +1762,7 @@ class Controls extends FlxActionSet
 		add(_ui_leftR);
 		add(_ui_rightR);
 		add(_ui_downR);
-		/*
+		
 		// 1K
 
 		add(_note_one);
@@ -1790,7 +1792,7 @@ class Controls extends FlxActionSet
 		add(_note_three3);
 		add(_note_three3P);
 		add(_note_three3R);
-		*/
+		
 		// 4K
 
 		add(_note_left);
@@ -1808,7 +1810,7 @@ class Controls extends FlxActionSet
 		add(_note_right);
 		add(_note_rightP);
 		add(_note_rightR);
-		/*
+		
 		// 5K
 		
 		add(_note_five1);
@@ -1958,7 +1960,7 @@ class Controls extends FlxActionSet
 		add(_note_nine9);
 		add(_note_nine9P);
 		add(_note_nine9R);
-		*/
+		
 		add(_accept);
 		add(_back);
 		add(_pause);
@@ -2012,7 +2014,7 @@ class Controls extends FlxActionSet
 			case UI_DOWN: _ui_down;
 			case UI_LEFT: _ui_left;
 			case UI_RIGHT: _ui_right;
-			/*
+			
 			// 1K
 
 			case NOTE_ONE: _note_one;
@@ -2027,14 +2029,14 @@ class Controls extends FlxActionSet
 			case NOTE_THREE1: _note_three1;
 			case NOTE_THREE2: _note_three2;
 			case NOTE_THREE3: _note_three3;
-			*/
+			
 			// 4K
 
 			case NOTE_UP: _note_up;
 			case NOTE_DOWN: _note_down;
 			case NOTE_LEFT: _note_left;
 			case NOTE_RIGHT: _note_right;
-			/*
+			
 			// 5K
 
 			case NOTE_FIVE1: _note_five1;
@@ -2084,7 +2086,7 @@ class Controls extends FlxActionSet
 			case NOTE_NINE7: _note_nine7;
 			case NOTE_NINE8: _note_nine8;
 			case NOTE_NINE9: _note_nine9;
-			*/
+			
 			case ACCEPT: _accept;
 			case BACK: _back;
 			case PAUSE: _pause;
@@ -2124,7 +2126,7 @@ class Controls extends FlxActionSet
 				func(_ui_down, PRESSED);
 				func(_ui_downP, JUST_PRESSED);
 				func(_ui_downR, JUST_RELEASED);
-			/*
+			
 			// 1K
 
 			case NOTE_ONE:
@@ -2160,7 +2162,7 @@ class Controls extends FlxActionSet
 				func(_note_three3, PRESSED);
 				func(_note_three3P, JUST_PRESSED);
 				func(_note_three3R, JUST_RELEASED);
-			*/
+			
 			// 4K
 
 			case NOTE_LEFT:
@@ -2182,7 +2184,7 @@ class Controls extends FlxActionSet
 				func(_note_right, PRESSED);
 				func(_note_rightP, JUST_PRESSED);
 				func(_note_rightR, JUST_RELEASED);
-			/*
+			
 			// 5K
 
 			case NOTE_FIVE1:
@@ -2367,7 +2369,7 @@ class Controls extends FlxActionSet
 				func(_note_nine9, PRESSED);
 				func(_note_nine9P, JUST_PRESSED);
 				func(_note_nine9R, JUST_RELEASED);
-			*/
+			
 			case ACCEPT:
 				func(_accept, JUST_PRESSED);
 			case BACK:
@@ -2535,7 +2537,7 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.UI_DOWN, keysMap.get('ui_down'));
 				inline bindKeys(Control.UI_LEFT, keysMap.get('ui_left'));
 				inline bindKeys(Control.UI_RIGHT, keysMap.get('ui_right'));
-				/*
+				
 				// 1K
 
 				inline bindKeys(Control.NOTE_ONE, keysMap.get('note_one'));
@@ -2550,14 +2552,14 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.NOTE_THREE1, keysMap.get('note_three1'));
 				inline bindKeys(Control.NOTE_THREE2, keysMap.get('note_three2'));
 				inline bindKeys(Control.NOTE_THREE3, keysMap.get('note_three3'));
-				*/
+				
 				// 4K
 
 				inline bindKeys(Control.NOTE_LEFT, keysMap.get('note_left'));
 				inline bindKeys(Control.NOTE_DOWN, keysMap.get('note_down'));
 				inline bindKeys(Control.NOTE_UP, keysMap.get('note_up'));
 				inline bindKeys(Control.NOTE_RIGHT, keysMap.get('note_right'));
-				/*
+				
 				// 5K
 
 				inline bindKeys(Control.NOTE_FIVE1, keysMap.get('note_five1'));
@@ -2607,7 +2609,7 @@ class Controls extends FlxActionSet
 				inline bindKeys(Control.NOTE_NINE7, keysMap.get('note_nine7'));
 				inline bindKeys(Control.NOTE_NINE8, keysMap.get('note_nine8'));
 				inline bindKeys(Control.NOTE_NINE9, keysMap.get('note_nine9'));
-				*/
+				
 				inline bindKeys(Control.ACCEPT, keysMap.get('accept'));
 				inline bindKeys(Control.BACK, keysMap.get('back'));
 				inline bindKeys(Control.PAUSE, keysMap.get('pause'));

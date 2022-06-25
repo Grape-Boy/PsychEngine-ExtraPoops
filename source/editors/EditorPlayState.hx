@@ -58,7 +58,10 @@ class EditorPlayState extends MusicBeatState
 	private var noteTypeMap:Map<String, Bool> = new Map<String, Bool>();
 	
 	// Less laggy controls
-	private var keysArray:Array<Dynamic>;
+	private var keysArray:Array<Array<Dynamic>>;
+
+	var mania:Int = PlayState.SONG.mania;
+	var tMania:Int;
 
 	public static var instance:EditorPlayState;
 
@@ -71,11 +74,98 @@ class EditorPlayState extends MusicBeatState
 		bg.color = FlxColor.fromHSB(FlxG.random.int(0, 359), FlxG.random.float(0, 0.8), FlxG.random.float(0.3, 1));
 		add(bg);
 
+		if (mania > 8 || mania < 0)
+		{
+			mania = 3;
+			tMania = 4;
+		} else {
+			tMania = mania + 1;
+		}
+
 		keysArray = [
-			ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_left')),
-			ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_down')),
-			ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_up')),
-			ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_right'))
+
+			[ // 1K
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_one')),
+			],
+
+			[ // 2K
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_two1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_two2')),
+			],
+
+			[ // 3K
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_three1')),
+
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_three2')),
+
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_three3')),
+			],
+
+
+			[ // 4K
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_left')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_down')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_up')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_right'))
+			],
+
+			[ // 5K
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five2')),
+
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five3')),
+
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five4')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_five5')),
+			],
+
+			[ // 6K
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six2')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six3')),
+
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six4')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six5')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_six6')),
+			],
+
+			[ // 7K
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven2')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven3')),
+
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven4')),
+
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven5')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven6')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_seven7')),
+			],
+
+			[ // 8K
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight2')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight3')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight4')),
+
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight5')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight6')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight7')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_eight8')),
+			],
+
+			[ // 9K
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine1')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine2')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine3')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine4')),
+
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine5')),
+
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine6')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine7')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine8')),
+				ClientPrefs.copyKey(ClientPrefs.keyBinds.get('note_nine9')),
+			],
 		];
 		
 		strumLine = new FlxSprite(ClientPrefs.middleScroll ? PlayState.STRUM_X_MIDDLESCROLL : PlayState.STRUM_X, 50).makeGraphic(FlxG.width, 10);
@@ -214,11 +304,11 @@ class EditorPlayState extends MusicBeatState
 				if(songNotes[1] > -1) { //Real notes
 					var daStrumTime:Float = songNotes[0];
 					if(daStrumTime >= startPos) {
-						var daNoteData:Int = Std.int(songNotes[1] % 4);
+						var daNoteData:Int = Std.int(songNotes[1] % tMania);
 
 						var gottaHitNote:Bool = section.mustHitSection;
 
-						if (songNotes[1] > 3)
+						if (songNotes[1] > mania)
 						{
 							gottaHitNote = !section.mustHitSection;
 						}
@@ -229,7 +319,7 @@ class EditorPlayState extends MusicBeatState
 						else
 							oldNote = null;
 
-						var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, false, true, 3);
+						var swagNote:Note = new Note(daStrumTime, daNoteData, oldNote, false, true, mania);
 						swagNote.mustPress = gottaHitNote;
 						swagNote.sustainLength = songNotes[2];
 						swagNote.noteType = songNotes[3];
@@ -247,7 +337,7 @@ class EditorPlayState extends MusicBeatState
 							{
 								oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
 
-								var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / FlxMath.roundDecimal(PlayState.SONG.speed, 2)), daNoteData, oldNote, true, true, 3);
+								var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + (Conductor.stepCrochet / FlxMath.roundDecimal(PlayState.SONG.speed, 2)), daNoteData, oldNote, true, true, mania);
 								sustainNote.mustPress = gottaHitNote;
 								sustainNote.noteType = swagNote.noteType;
 								sustainNote.scrollFactor.set();
@@ -260,7 +350,7 @@ class EditorPlayState extends MusicBeatState
 								else if(ClientPrefs.middleScroll)
 								{
 									sustainNote.x += 310;
-									if(daNoteData > 1)
+									if(daNoteData > Std.int(mania/2))
 									{ //Up and Right
 										sustainNote.x += FlxG.width / 2 + 25;
 									}
@@ -275,7 +365,7 @@ class EditorPlayState extends MusicBeatState
 						else if(ClientPrefs.middleScroll)
 						{
 							swagNote.x += 310;
-							if(daNoteData > 1) //Up and Right
+							if(daNoteData > Std.int(mania/2)) //Up and Right
 							{
 								swagNote.x += FlxG.width / 2 + 25;
 							}
@@ -440,7 +530,7 @@ class EditorPlayState extends MusicBeatState
 					if(daNote.isSustainNote && !daNote.animation.curAnim.name.endsWith('end')) {
 						time += 0.15;
 					}
-					StrumPlayAnim(true, Std.int(Math.abs(daNote.noteData)) % 4, time);
+					StrumPlayAnim(true, Std.int(Math.abs(daNote.noteData)) % tMania, time);
 					daNote.hitByOpponent = true;
 
 					if (!daNote.isSustainNote)
@@ -723,7 +813,7 @@ class EditorPlayState extends MusicBeatState
 					return;
 			}
 
-			if (!note.isSustainNote)
+			if (!note.isSustainNote && !note.noCombo)
 			{
 				popUpScore(note);
 				combo += 1;
@@ -935,13 +1025,13 @@ class EditorPlayState extends MusicBeatState
 
 	private function generateStaticArrows(player:Int):Void
 	{
-		for (i in 0...3)
+		for (i in 0...tMania)
 		{
 			// FlxG.log.add(i);
 			var targetAlpha:Float = 1;
 			if (player < 1 && ClientPrefs.middleScroll) targetAlpha = 0.35;
 
-			var babyArrow:StrumNote = new StrumNote(ClientPrefs.middleScroll ? PlayState.STRUM_X_MIDDLESCROLL : PlayState.STRUM_X, strumLine.y, i, player, 3);
+			var babyArrow:StrumNote = new StrumNote(ClientPrefs.middleScroll ? PlayState.STRUM_X_MIDDLESCROLL : PlayState.STRUM_X, strumLine.y, i, player, mania);
 			babyArrow.alpha = targetAlpha;
 
 			if (player == 1)
@@ -996,9 +1086,9 @@ class EditorPlayState extends MusicBeatState
 		var skin:String = 'noteSplashes';
 		if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
 		
-		var hue:Float = ClientPrefs.arrowHSV[data % 4][0] / 360;
-		var sat:Float = ClientPrefs.arrowHSV[data % 4][1] / 100;
-		var brt:Float = ClientPrefs.arrowHSV[data % 4][2] / 100;
+		var hue:Float = ClientPrefs.arrowHSV[data % tMania][0] / 360;
+		var sat:Float = ClientPrefs.arrowHSV[data % tMania][1] / 100;
+		var brt:Float = ClientPrefs.arrowHSV[data % tMania][2] / 100;
 		if(note != null) {
 			skin = note.noteSplashTexture;
 			hue = note.noteSplashHue;
